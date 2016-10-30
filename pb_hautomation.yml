@@ -6,5 +6,6 @@
     - ntp
     - mysql
     - redis
+    - apache
     # - hautomation_dependencies
     # - hautomation_ui
