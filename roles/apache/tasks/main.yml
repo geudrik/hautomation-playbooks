@@ -6,7 +6,7 @@
   tags: [apache]
 
 - name: Set up apaache modules
-  pache2_module: state={{state}} name={{name}}
+  apache2_module: state={{state}} name={{name}}
   with_items:
     - { name: 'wsgi', state: 'present' }
     - { name: 'ssl', state: 'present' }
