@@ -21,7 +21,7 @@
   tags: [apache]
 
 - name: Making sure local apache certs exist...
-  local_action: stat path={{item.path}}
+  local_action: stat path={{item}}
   with_items:
     - ~/.ssl/hautomation.crt
     - ~/.ssl/hautomation.key
