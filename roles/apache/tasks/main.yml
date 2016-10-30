@@ -30,7 +30,7 @@
   tags: [apache]
 
 - name: Copy Apache certs to host...
-  copy: src=item.src dest=item.dst
+  copy: src={{item.src}} dest={{item.dst}}
   with_items:
     - {'src': '~/.ssl/hautomation.crt', 'dst': '/etc/apache2/ssl/hautomation.crt'}
     - {'src': '~/.ssl/hautomation.key', 'dst': '/etc/apach2/ssl/hautomation.key'}
