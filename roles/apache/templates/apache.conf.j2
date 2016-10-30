@@ -3,8 +3,8 @@
         WSGIScriptAlias         /       /opt/hautomation/wsgi_app.wsgi
 
         SSLEngine On
-        SSLCertificateFile      /etc/apache2/ssl/{{apache_cert}}
-        SSLCertificateKeyFile   /etc/apache2/ssl/{{apache_key}}
+        SSLCertificateFile      /etc/apache2/ssl/hautomation.crt
+        SSLCertificateKeyFile   /etc/apache2/ssl/hautomation.key
 
         <Directory /opt/hautomation>
                 Require         all     granted

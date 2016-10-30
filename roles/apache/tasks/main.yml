@@ -5,17 +5,37 @@
     - libapache2-mod-wsgi
   tags: [apache]
 
-- name: Set up apaache modules
-  apache2_module: state={{state}} name={{name}}
+- name: Set up Apache modules
+  apache2_module: state={{item.state}} name={{item.name}}
   with_items:
     - { name: 'wsgi', state: 'present' }
     - { name: 'ssl', state: 'present' }
     - { name: 'rewrite', state: 'absent' }
   tags: [apache]
 
-- name: Copy apache config
+- name: Copy Apache config
   template:
     src=apache.conf.j2
     dest=/etc/apache2/apache2.conf
   tags: [apache]
+
+- name: Making sure local apache certs exist...
+  local_action: stat path={{item.path}}
+  with_items:
+    - ~/.ssl/hautomation.crt
+    - ~/.ssl/hautomation.key
+  register: file
+  ignore_errors: False
+  tags: [apache]
+
+- name: Copy Apache certs to host...
+  copy: src=item.src dest=item.dst
+  with_items:
+    - {'src': '~/.ssl/hautomation.crt', 'dst': '/etc/apache2/ssl/hautomation.crt'}
+    - {'src': '~/.ssl/hautomation.key', 'dst': '/etc/apach2/ssl/hautomation.key'}
+  when: file.stat.exists
+  tags: [apache]
+
+- name: Restarting Apache to make changes take effect...
   notify: restart apache2
+  tags: [apache]
