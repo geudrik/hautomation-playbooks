@@ -25,7 +25,7 @@
   with_items:
     - ~/.ssl/hautomation.crt
     - ~/.ssl/hautomation.key
-  register: file
+  register: certs_exist
   ignore_errors: False
   tags: [apache]
 
@@ -34,7 +34,7 @@
   with_items:
     - {'src': '~/.ssl/hautomation.crt', 'dst': '/etc/apache2/ssl/hautomation.crt'}
     - {'src': '~/.ssl/hautomation.key', 'dst': '/etc/apach2/ssl/hautomation.key'}
-  when: file.stat.exists
+  when: certs_exist
   tags: [apache]
 
 - name: Restarting Apache to make changes take effect...
