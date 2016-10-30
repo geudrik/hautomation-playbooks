@@ -11,6 +11,7 @@
     - { name: 'wsgi', state: 'present' }
     - { name: 'ssl', state: 'present' }
     - { name: 'rewrite', state: 'absent' }
+  notify: restart apache
   tags: [apache]
 
 - name: Copy Apache config
@@ -37,5 +38,5 @@
   tags: [apache]
 
 - name: Restarting Apache to make changes take effect...
-  notify: restart apache2
+  service: name=apache2 state=restarted
   tags: [apache]
