@@ -1,0 +1,10 @@
+---
+- hosts: all
+  become: yes
+  gather_facts: True
+  roles:
+    - ntp
+    - mysql
+    - redis
+    # - hautomation_dependencies
+    # - hautomation_ui

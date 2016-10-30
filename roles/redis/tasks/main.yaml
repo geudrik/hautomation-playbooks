@@ -1,0 +1,31 @@
+---
+- name: Ensure redis is installed
+  apt: name=redis-server update_cache=yes
+  tags: [redis]
+
+- name: Ensure redis is running
+  service: name=redis-server state=running
+  tags: [redis]
+
+- name: Adjust redis ulimit
+  lineinfile:
+    dest=/etc/default/redis-server
+    regexp="^#?ULIMIT="
+    line="ULIMIT=65536"
+  tags: [redis]
+
+- name: Bind redis to {{redis_bind}}
+  lineinfile:
+    dest=/etc/redis/redis.conf
+    regexp="^bind"
+    line="bind {{redis_bind}}"
+  tags: [redis]
+  notify: restart redis
+
+- name: Update the default timeout to 60 and restart
+  lineinfile:
+    dest=/etc/redis/redis.conf
+    regexp="^timeout"
+    line="timeout 60"
+  tags: [redis]
+  notify: restart redis

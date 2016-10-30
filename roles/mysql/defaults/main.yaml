@@ -1,0 +1,6 @@
+mysql_root_pass: root
+mysql_user: dev
+mysql_pass: dev
+mysql_db: dev
+mysql_host: localhost
+mysql_bind_addr: 0.0.0.0

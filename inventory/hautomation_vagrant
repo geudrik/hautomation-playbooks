@@ -1,0 +1,23 @@
+
+[mysql]
+web.ha.local ansible_ssh_host=192.168.28.2 ansible_connection=local
+
+[redis]
+web.ha.local ansible_ssh_host=192.168.28.2 ansible_connection=local
+
+[hautomation_ui]
+web.ha.local ansible_ssh_host=192.168.28.2 ansible_connection=local
+
+[all:vars]
+project=hautomation
+domain_name={{ inventory_hostname }}
+ansible_ssh_user=vagrant
+ansible_ssh_private_key_file=~/.vagrant.d/insecure_private_key
+env=dev
+debug_mode=true
+host_key_checking=false
+mysql_host=web.ha.local
+mysql_db=hautomation
+mysql_user=hautomation
+mysql_pass=hautomation123
+redis_host=web.ha.local

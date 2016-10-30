@@ -1,0 +1,75 @@
+- name: Install mariadb and dependencies
+  apt: name={{item}} state=present
+  with_items:
+    - python-mysqldb
+    - mariadb-server
+  tags: [mysql]
+
+- name: Ensure Maria is running
+  service: name=mysql state=started enabled=yes
+
+- name: Update MySQL root password
+  mysql_user:
+    name=root
+    host={{item}}
+    password={{mysql_root_pass}}
+    state=present
+    check_implicit_admin=yes
+    login_user=root
+    login_password={{mysql_root_pass}}
+  with_items:
+    - 0.0.0.0
+    - 127.0.0.1
+    - localhost
+    - "{{ ansible_hostname }}"
+  tags: [mysql]
+
+- name: Create .my.cnf file
+  template: src=root.cnf.j2 dest=~/.my.cnf mode=0600
+  tags: [mysql]
+
+- name: Remove anonymous users
+  mysql_user: name='' host={{item}} state=absent
+  with_items:
+    - 0.0.0.0
+    - localhost
+    - "{{ansible_hostname}}"
+  tags: [mysql]
+
+- name: Create mysql user
+  mysql_user:
+    name={{mysql_user}}
+    password={{mysql_pass}}
+    priv=*.*:ALL
+    host={{item}}
+    state=present
+  with_items:
+    - "%"
+  register: user_created
+  notify: restart mysql
+  tags: [mysql]
+
+- name: Set mysql bind addr to {{mysql_bind_addr}}
+  lineinfile: dest=/etc/mysql/my.cnf
+    regexp='bind-address\s*=\s*127\.0\.0\.1\s*'
+    line='bind-address = {{mysql_bind_addr}}'
+    state=present
+    backrefs=yes
+  notify: restart mysql
+  tags: [mysql]
+
+- name: Restart maria to flush everthing
+  service: name=mysql state=restarted
+  when: user_created.changed
+  tags: [mysql]
+
+- name: Ensure {{mysql_db}} DB exists with access granted to {{mysql_user}}
+  mysql_db:
+    name={{mysql_db}}
+    login_host={{mysql_host}}
+    login_user={{mysql_user}}
+    login_password={{mysql_pass}}
+    state=present
+  notify: restart mysql
+  tags: [mysql]
+
