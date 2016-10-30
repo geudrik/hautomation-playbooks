@@ -1,0 +1,21 @@
+- name: Install Apache2 and Dependencies
+  apt: name={{item}} state=present
+  with_items:
+    - apache2
+    - libapache2-mod-wsgi
+  tags: [apache]
+
+- name: Set up apaache modules
+  pache2_module: state={{state}} name={{name}}
+  with_items:
+    - { name: 'wsgi', state: 'present' }
+    - { name: 'ssl', state: 'present' }
+    - { name: 'rewrite', state: 'absent' }
+  tags: [apache]
+
+- name: Copy apache config
+  template:
+    src=apache.conf.j2
+    dest=/etc/apache2/apache2.conf
+  tags: [apache]
+  notify: restart apache2

@@ -1,0 +1,18 @@
+<VirtualHost *:443>
+
+        WSGIScriptAlias         /       /opt/hautomation/wsgi_app.wsgi
+
+        SSLEngine On
+        SSLCertificateFile      /etc/apache2/ssl/{{apache_cert}}
+        SSLCertificateKeyFile   /etc/apache2/ssl/{{apache_key}}
+
+        <Directory /opt/hautomation>
+                Require         all     granted
+                WSGIScriptReloading On
+        </Directory>
+
+        ErrorLog        ${APACHE_LOG_DIR}/error.log
+        LogLevel        error
+        CustomLog       ${APACHE_LOG_DIR}/access.log    combined
+
+</VirtualHost>
